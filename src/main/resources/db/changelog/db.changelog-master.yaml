@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: fintech
+      changes:
+        - createTable:
+            tableName: loan
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: varchar(255)
+              - column:
+                  name: amount
+                  type: double
+              - column:
+                  name: interest_rate
+                  type: double
+              - column:
+                  name: term
+                  type: int
+              - column:
+                  name: status
+                  type: varchar(255)

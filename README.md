@@ -1,15 +1,15 @@
 # Implementación de un microservicio con BDD, TDD y DDD
 
-El sistema de una empresa fintech necesita un nuevo microservicio para gestionar las solicitudes de préstamos. Este microservicio debe ser robusto, escalable y fácil de mantener. Necesitamos implementar este microservicio utilizando las metodologías BDD, TDD y DDD para asegurar que el código sea de alta calidad y que los requisitos del negocio sean bien entendidos y documentados.
+El equipo de desarrollo de una fintech necesita implementar un microservicio que maneje las solicitudes de préstamo. El sistema debe permitir a los usuarios solicitar préstamos, verificar su elegibilidad y recibir una respuesta. Se espera que el microservicio sea robusto, escalable y fácil de mantener. El equipo ha decidido utilizar las metodologías BDD, TDD y DDD para garantizar la calidad y la alineación con las necesidades del negocio.
 
 ## Informacion General
 
 | Campo | Valor |
 |-------|-------|
 | **Tema** | Metodologías de desarrollo: BDD, TDD, DDD |
-| **Nivel** | advanced-l2 |
+| **Nivel** | junior-l3 |
 | **Tipo** | practical |
-| **Tiempo estimado** | 5-6 horas |
+| **Tiempo estimado** | 8-10 horas |
 
 ## Fases del Reto
 
@@ -38,86 +38,85 @@ El sistema de una empresa fintech necesita un nuevo microservicio para gestionar
 
 </details>
 
-### Fase 1: Definición del dominio y requisitos del negocio
+### Fase 1: Definición de las reglas de negocio y requisitos
 
-**Objetivo:** Identificar y documentar los requisitos del negocio y las reglas del dominio para el microservicio de gestión de préstamos.
-
-**Tiempo estimado:** 1 hora
-
-**Instrucciones:**
-
-- Identifica los principales actores y sus interacciones con el sistema.
-- Define las reglas de negocio y los estados posibles de una solicitud de préstamo.
-- Documenta los casos de uso y las historias de usuario relevantes.
-
-**Entregable:** Documentación de los requisitos del negocio y las reglas del dominio.
-
-<details>
-<summary>Pistas de conocimiento</summary>
-
-- Piensa en los diferentes estados que puede tener una solicitud de préstamo (pendiente, aprobada, rechazada, etc.)
-- Considera los diferentes actores que interactúan con el sistema (cliente, administrador, etc.)
-
-</details>
-
-### Fase 2: Implementación de pruebas con BDD
-
-**Objetivo:** Implementar pruebas de comportamiento utilizando BDD para validar los requisitos del negocio.
+**Objetivo:** Identificar y documentar las reglas de negocio y los requisitos funcionales del microservicio.
 
 **Tiempo estimado:** 2 horas
 
 **Instrucciones:**
 
-- Escribe pruebas de comportamiento que cubran los casos de uso identificados en la fase anterior.
-- Asegúrate de que las pruebas sean legibles y comprensibles para los no técnicos.
-- Valida que las pruebas se ejecuten correctamente y que los resultados sean los esperados.
+- Identifica las reglas de negocio y los requisitos funcionales para el proceso de solicitud de préstamo.
+- Documenta los criterios de elegibilidad para los préstamos.
+- Define los casos de uso y las historias de usuario para el microservicio.
 
-**Entregable:** Pruebas de comportamiento implementadas y ejecutadas con éxito.
+**Entregable:** Documento con las reglas de negocio, requisitos funcionales y casos de uso.
 
 <details>
 <summary>Pistas de conocimiento</summary>
 
-- Utiliza un lenguaje de especificación de comportamiento para escribir las pruebas.
-- Asegúrate de que las pruebas reflejen los requisitos del negocio de manera clara y concisa.
+- Piensa en cómo se relacionan las reglas de negocio con las historias de usuario.
+- Considera los diferentes escenarios y casos de uso para el proceso de solicitud de préstamo.
 
 </details>
 
-### Fase 3: Implementación de pruebas con TDD
+### Fase 2: Diseño del modelo de dominio
 
-**Objetivo:** Implementar pruebas unitarias utilizando TDD para garantizar la calidad del código.
+**Objetivo:** Diseñar el modelo de dominio para el microservicio utilizando DDD.
 
-**Tiempo estimado:** 2 horas
+**Tiempo estimado:** 3 horas
 
 **Instrucciones:**
 
-- Escribe pruebas unitarias para las funcionalidades clave del microservicio.
-- Implementa el código necesario para hacer pasar las pruebas.
-- Asegúrate de que el código sea sencillo y fácil de mantener.
+- Diseña el modelo de dominio para el microservicio de solicitud de préstamo.
+- Identifica las entidades, agregados y valoraciones del dominio.
+- Define las relaciones entre las entidades y los agregados.
 
-**Entregable:** Pruebas unitarias implementadas y ejecutadas con éxito.
+**Entregable:** Diagrama del modelo de dominio y documentación.
 
 <details>
 <summary>Pistas de conocimiento</summary>
 
-- Utiliza un enfoque de desarrollo guiado por pruebas para escribir el código.
-- Asegúrate de que las pruebas cubran todos los casos de uso y edge cases relevantes.
+- Piensa en cómo las entidades y agregados se relacionan en el dominio.
+- Considera las invariantes y las reglas de negocio que deben aplicarse en el modelo de dominio.
+
+</details>
+
+### Fase 3: Implementación con TDD
+
+**Objetivo:** Implementar el microservicio utilizando TDD para garantizar la calidad del código.
+
+**Tiempo estimado:** 3 horas
+
+**Instrucciones:**
+
+- Escribe pruebas unitarias para las funcionalidades del microservicio utilizando TDD.
+- Implementa las funcionalidades del microservicio para pasar las pruebas unitarias.
+- Asegura que el código cumpla con los estándares de calidad y sea mantenible.
+
+**Entregable:** Código del microservicio con pruebas unitarias y documentación.
+
+<details>
+<summary>Pistas de conocimiento</summary>
+
+- Piensa en cómo escribir pruebas unitarias que cubran todos los casos de uso y escenarios.
+- Considera las mejores prácticas para escribir código mantenible y escalable.
 
 </details>
 
 ## Dimensiones Evaluadas
 
-- **queEs**: ¿Qué es BDD y cómo se aplica en este reto?
-- **paraQueSirve**: ¿Para qué sirve TDD en el desarrollo de este microservicio?
-- **comoSeUsa**: ¿Cómo se usa DDD para modelar el dominio del microservicio de gestión de préstamos?
-- **erroresComunes**: ¿Qué errores comunes pueden ocurrir al implementar pruebas con BDD y TDD?
-- **queDecisionesImplica**: ¿Qué decisiones de diseño implica la implementación de este microservicio utilizando BDD, TDD y DDD?
+- **queEs**: ¿Qué es el modelo de dominio y cómo se relaciona con las reglas de negocio?
+- **paraQueSirve**: ¿Para qué sirven las pruebas unitarias en el proceso de desarrollo del microservicio?
+- **comoSeUsa**: ¿Cómo se utiliza TDD para implementar el microservicio?
+- **erroresComunes**: ¿Cuáles son los errores comunes al diseñar el modelo de dominio y cómo se pueden evitar?
+- **queDecisionesImplica**: ¿Qué decisiones implica la implementación del microservicio utilizando TDD y cómo se pueden justificar?
 
 ## Criterios de Evaluacion
 
-- Documentación clara y completa de los requisitos del negocio y las reglas del dominio.
-- Pruebas de comportamiento implementadas y ejecutadas con éxito.
-- Pruebas unitarias implementadas y ejecutadas con éxito.
-- Código sencillo y fácil de mantener.
+- Documento con las reglas de negocio, requisitos funcionales y casos de uso.
+- Diagrama del modelo de dominio y documentación.
+- Código del microservicio con pruebas unitarias y documentación.
 
 ---
 

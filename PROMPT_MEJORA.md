@@ -123,324 +123,170 @@ El participante que recibirá este proyecto los debe encontrar y resolver él mi
 
 INPUT
 Aquí está la cadena con los archivos:
-// === ARCHIVO: src/main/java/com/fintech/loanservice/domain/Loan.java ===
-package com.fintech.loanservice.domain;
+// === ARCHIVO: src/main/java/com/fintech/loan/LoanApplication.java ===
+package com.fintech.loan;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class LoanApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(LoanApplication.class, args);
+    }
+}
+
+// === ARCHIVO: src/main/java/com/fintech/loan/domain/Loan.java ===
+package com.fintech.loan.domain;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
 public class Loan {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String applicantName;
-    private Double amount;
+    private String userId;
+    private double amount;
+    private double interestRate;
+    private int term;
     private String status;
 
-    public Loan() {}
-
-    public Loan(String applicantName, Double amount, String status) {
-        this.applicantName = applicantName;
-        this.amount = amount;
-        this.status = status;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getApplicantName() {
-        return applicantName;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    // Constructors, getters, and setters
 }
 
-// === ARCHIVO: src/main/java/com/fintech/loanservice/application/LoanService.java ===
-package com.fintech.loanservice.application;
+// === ARCHIVO: src/main/java/com/fintech/loan/application/LoanService.java ===
+package com.fintech.loan.application;
 
-import com.fintech.loanservice.domain.Loan;
-import com.fintech.loanservice.infrastructure.LoanRepository;
+import com.fintech.loan.domain.Loan;
+import com.fintech.loan.infrastructure.LoanRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Service
 public class LoanService {
-    private final LoanRepository loanRepository;
+    @Autowired
+    private LoanRepository loanRepository;
 
-    public LoanService(LoanRepository loanRepository) {
-        this.loanRepository = loanRepository;
-    }
-
-    public Flux<Loan> getAllLoans() {
-        return loanRepository.findAll();
-    }
-
-    public Mono<Loan> getLoanById(Long id) {
-        return loanRepository.findById(id);
-    }
-
-    public Mono<Loan> createLoan(Loan loan) {
+    public Loan applyForLoan(Loan loan) {
+        // Business logic here
         return loanRepository.save(loan);
     }
 
-    public Mono<Loan> updateLoanStatus(Long id, String status) {
-        return loanRepository.findById(id)
-               .flatMap(loan -> {
-                    loan.setStatus(status);
-                    return loanRepository.save(loan);
-                });
+    public Loan checkEligibility(Loan loan) {
+        // Business logic here
+        return loanRepository.save(loan);
     }
 }
 
-// === ARCHIVO: src/main/java/com/fintech/loanservice/infrastructure/LoanRepository.java ===
-package com.fintech.loanservice.infrastructure;
+// === ARCHIVO: src/main/java/com/fintech/loan/infrastructure/LoanRepository.java ===
+package com.fintech.loan.infrastructure;
 
-import com.fintech.loanservice.domain.Loan;
+import com.fintech.loan.domain.Loan;
 import org.springframework.data.jpa.repository.JpaRepository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface LoanRepository extends JpaRepository<Loan, Long> {
-    Flux<Loan> findAll();
-    Mono<Loan> findById(Long id);
-    Mono<Loan> save(Loan loan);
 }
 
-// === ARCHIVO: src/main/java/com/fintech/loanservice/infrastructure/LoanController.java ===
-package com.fintech.loanservice.infrastructure;
+// === ARCHIVO: src/test/java/com/fintech/loan/LoanServiceTest.java ===
+package com.fintech.loan;
 
-import com.fintech.loanservice.application.LoanService;
-import com.fintech.loanservice.domain.Loan;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
-import java.util.Optional;
-
-@RestController
-@RequestMapping("/api/loans")
-public class LoanController {
-    private final LoanService loanService;
-
-    @Autowired
-    public LoanController(LoanService loanService) {
-        this.loanService = loanService;
-    }
-
-    @GetMapping
-    public Flux<Loan> getAllLoans() {
-        return loanService.getAllLoans();
-    }
-
-    @GetMapping("/{id}")
-    public Mono<ResponseEntity<Loan>> getLoanById(@PathVariable Long id) {
-        return loanService.getLoanById(id)
-               .map(loan -> new ResponseEntity<>(loan, HttpStatus.OK))
-               .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    @PostMapping
-    public Mono<Loan> createLoan(@RequestBody Loan loan) {
-        return loanService.createLoan(loan);
-    }
-
-    @PutMapping("/{id}")
-    public Mono<ResponseEntity<Loan>> updateLoanStatus(@PathVariable Long id, @RequestParam String status) {
-        return loanService.updateLoanStatus(id, status)
-               .map(loan -> new ResponseEntity<>(loan, HttpStatus.OK))
-               .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-}
-
-// === ARCHIVO: src/test/java/com/fintech/loanservice/LoanServiceTest.java ===
-package com.fintech.loanservice;
-
-import com.fintech.loanservice.application.LoanService;
-import com.fintech.loanservice.domain.Loan;
-import com.fintech.loanservice.infrastructure.LoanRepository;
-import org.junit.jupiter.api.BeforeEach;
+import com.fintech.loan.application.LoanService;
+import com.fintech.loan.domain.Loan;
+import com.fintech.loan.infrastructure.LoanRepository;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-import static org.mockito.Mockito.*;
-
-public class LoanServiceTest {
-    private LoanService loanService;
-    private LoanRepository loanRepository;
-
-    @BeforeEach
-    public void setUp() {
-        loanRepository = Mockito.mock(LoanRepository.class);
-        loanService = new LoanService(loanRepository);
-    }
-
-    @Test
-    public void testGetAllLoans() {
-        Loan loan = new Loan("John Doe", 1000.0, "Pending");
-        Flux<Loan> loanFlux = Flux.just(loan);
-        when(loanRepository.findAll()).thenReturn(loanFlux);
-
-        StepVerifier.create(loanService.getAllLoans())
-               .expectNext(loan)
-               .verifyComplete();
-    }
-
-    @Test
-    public void testCreateLoan() {
-        Loan loan = new Loan("John Doe", 1000.0, "Pending");
-        when(loanRepository.save(loan)).thenReturn(Mono.just(loan));
-
-        StepVerifier.create(loanService.createLoan(loan))
-               .expectNext(loan)
-               .verifyComplete();
-    }
-
-    @Test
-    public void testUpdateLoanStatus() {
-        Loan loan = new Loan("John Doe", 1000.0, "Pending");
-        when(loanRepository.findById(1L)).thenReturn(Mono.just(loan));
-        when(loanRepository.save(loan)).thenReturn(Mono.just(loan));
-
-        StepVerifier.create(loanService.updateLoanStatus(1L, "Approved"))
-               .expectNext(loan)
-               .verifyComplete();
-    }
-}
-
-// === ARCHIVO: src/test/java/com/fintech/loanservice/LoanControllerTest.java ===
-package com.fintech.loanservice;
-
-import com.fintech.loanservice.application.LoanService;
-import com.fintech.loanservice.domain.Loan;
-import com.fintech.loanservice.infrastructure.LoanController;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@WebFluxTest(LoanController.class)
-public class LoanControllerTest {
+@SpringBootTest
+class LoanServiceTest {
+
     @Autowired
-    private WebTestClient webTestClient;
+    private LoanService loanService;
 
     @MockBean
-    private LoanService loanService;
+    private LoanRepository loanRepository;
 
-    @BeforeEach
-    public void setUp() {
-        Loan loan = new Loan("John Doe", 1000.0, "Pending");
-        when(loanService.getAllLoans()).thenReturn(Flux.just(loan));
-        when(loanService.getLoanById(1L)).thenReturn(Mono.just(loan));
-        when(loanService.createLoan(loan)).thenReturn(Mono.just(loan));
-        when(loanService.updateLoanStatus(1L, "Approved")).thenReturn(Mono.just(loan));
+    @Test
+    void testApplyForLoan() {
+        Loan loan = new Loan();
+        loan.setUserId("user123");
+        loan.setAmount(10000);
+        loan.setInterestRate(5.0);
+        loan.setTerm(12);
+        loan.setStatus("Pending");
+
+        Loan savedLoan = loanService.applyForLoan(loan);
+
+        assertNotNull(savedLoan);
+        assertEquals("user123", savedLoan.getUserId());
+        assertEquals(10000, savedLoan.getAmount(), 0.01);
+        assertEquals(5.0, savedLoan.getInterestRate(), 0.01);
+        assertEquals(12, savedLoan.getTerm());
+        assertEquals("Pending", savedLoan.getStatus());
     }
 
     @Test
-    public void testGetAllLoans() {
-        webTestClient.get().uri("/api/loans")
-               .accept(MediaType.APPLICATION_JSON)
-               .exchange()
-               .expectStatus().isOk()
-               .expectBodyList(Loan.class).hasSize(1);
-    }
+    void testCheckEligibility() {
+        Loan loan = new Loan();
+        loan.setUserId("user123");
+        loan.setAmount(10000);
+        loan.setInterestRate(5.0);
+        loan.setTerm(12);
+        loan.setStatus("Eligible");
 
-    @Test
-    public void testGetLoanById() {
-        webTestClient.get().uri("/api/loans/1")
-               .accept(MediaType.APPLICATION_JSON)
-               .exchange()
-               .expectStatus().isOk()
-               .expectBody(Loan.class);
-    }
+        Loan checkedLoan = loanService.checkEligibility(loan);
 
-    @Test
-    public void testCreateLoan() {
-        Loan loan = new Loan("John Doe", 1000.0, "Pending");
-        webTestClient.post().uri("/api/loans")
-               .contentType(MediaType.APPLICATION_JSON)
-               .bodyValue(loan)
-               .exchange()
-               .expectStatus().isCreated()
-               .expectBody(Loan.class);
-    }
-
-    @Test
-    public void testUpdateLoanStatus() {
-        webTestClient.put().uri("/api/loans/1?status=Approved")
-               .accept(MediaType.APPLICATION_JSON)
-               .exchange()
-               .expectStatus().isOk()
-               .expectBody(Loan.class);
+        assertNotNull(checkedLoan);
+        assertEquals("user123", checkedLoan.getUserId());
+        assertEquals(10000, checkedLoan.getAmount(), 0.01);
+        assertEquals(5.0, checkedLoan.getInterestRate(), 0.01);
+        assertEquals(12, checkedLoan.getTerm());
+        assertEquals("Eligible", checkedLoan.getStatus());
     }
 }
 
-// === ARCHIVO: src/test/resources/features/loan.feature ===
-Feature: Gestión de préstamos
+// === ARCHIVO: src/main/resources/application.properties ===
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 
-  Scenario: Crear una solicitud de préstamo
-    Given que no hay solicitudes de préstamo
-    When se crea una solicitud de préstamo con el nombre "John Doe", la cantidad 1000.0 y el estado "Pending"
-    Then la solicitud de préstamo debe ser creada con el estado "Pending"
-
-  Scenario: Obtener todas las solicitudes de préstamo
-    Given que hay una solicitud de préstamo con el nombre "John Doe", la cantidad 1000.0 y el estado "Pending"
-    When se solicitan todas las solicitudes de préstamo
-    Then se deben obtener todas las solicitudes de préstamo
-
-  Scenario: Actualizar el estado de una solicitud de préstamo
-    Given que hay una solicitud de préstamo con el nombre "John Doe", la cantidad 1000.0 y el estado "Pending"
-    When se actualiza el estado de la solicitud de préstamo a "Approved"
-    Then la solicitud de préstamo debe tener el estado "Approved"
-
-// === ARCHIVO: src/main/resources/application.yml ===
-server:
-  port: 8080
-
-spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+// === ARCHIVO: src/main/resources/db/changelog/db.changelog-master.yaml ===
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: fintech
+      changes:
+        - createTable:
+            tableName: loan
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: varchar(255)
+              - column:
+                  name: amount
+                  type: double
+              - column:
+                  name: interest_rate
+                  type: double
+              - column:
+                  name: term
+                  type: int
+              - column:
+                  name: status
+                  type: varchar(255)
 
 ```
